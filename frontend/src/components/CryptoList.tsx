@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { getTopCryptos } from '../services/api';
 import CryptoItem from './CryptoItem';
 import AddToPortfolioModal from './AddToPortfolioModal';
 import {
@@ -28,18 +29,19 @@ interface Crypto {
 
 const defaultCrypto: Crypto = {
   id: 0,
-  name: 'Unknown',
-  symbol: 'UNK',
+  name: 'Bitcoin',
+  symbol: 'BTC',
   quote: {
     THB: {
       price: 0,
     },
   },
-  logo: 'https://via.placeholder.com/32',
+  logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
 };
 
 const CryptoList: React.FC = () => {
   const [cryptos, setCryptos] = useState<Crypto[]>(Array(10).fill(defaultCrypto));
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCrypto, setSelectedCrypto] = useState<Crypto | null>(null);
 
@@ -53,7 +55,12 @@ const CryptoList: React.FC = () => {
   };
 
   useEffect(() => {
-    
+    const fetchCryptos = async () => {
+      const data = await getTopCryptos();
+      console.log(data)
+      setCryptos(data);
+    };
+    // fetchCryptos();
   }, []);
 
   return (
@@ -74,7 +81,7 @@ const CryptoList: React.FC = () => {
             </Tr>
           </Thead>
           <Tbody>
-          {cryptos.map(crypto => (
+          {cryptos && cryptos.map(crypto => (
             <CryptoItem key={crypto.id} crypto={crypto} onAdd={handleAddToPortfolio} />
           ))}
           </Tbody>
