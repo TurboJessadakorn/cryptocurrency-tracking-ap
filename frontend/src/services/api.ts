@@ -11,3 +11,23 @@ export const getTopCryptos = async () => {
     throw error;
   }
 };
+
+export const registerUser = async (username: string, password: string) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/users/register`, { username, password });
+    return response.data;
+  } catch (error) {
+    console.error('Error registering user:', error);
+    throw error;
+  }
+};
+
+export const signInUser = async (username: string, password: string) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/auth/login`, { username, password });
+    return response.data;
+  } catch (error) {
+    console.error('Error signing in user:', error);
+    throw error;
+  }
+};
