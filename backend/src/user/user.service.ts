@@ -23,6 +23,10 @@ export class UserService {
     return this.userRepository.findOne({ where: { username } });
   }
 
+  async findById(id: number): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { id } });
+  }
+
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.findOne(username);
     if (user && await bcrypt.compare(password, user.password)) {

@@ -30,7 +30,7 @@ import {
   ChevronRightIcon,
 } from '@chakra-ui/icons'
 import { useEffect, useState } from 'react';
-import { registerUser, signInUser } from '../services/api';
+import { registerUser, signInUser } from '../services/api/auth';
 import axios from 'axios';
 
 export default function WithSubnavigation() {
