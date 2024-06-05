@@ -25,6 +25,9 @@ export const registerUser = async (username: string, password: string) => {
 export const signInUser = async (username: string, password: string) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/login`, { username, password });
+    console.log(response)
+    const { access_token } = response.data;
+    localStorage.setItem('accessToken', access_token);
     return response.data;
   } catch (error) {
     console.error('Error signing in user:', error);
