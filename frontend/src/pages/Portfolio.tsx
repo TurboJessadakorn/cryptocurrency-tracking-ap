@@ -1,5 +1,6 @@
 import { Box, Text, VStack, HStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getPortfolio } from '../services/api/portfolio';
 
 interface PortfolioItem {
   id: number;
@@ -20,13 +21,22 @@ const Portfolio: React.FC = () => {
     setSelectedCrypto(crypto);
   };
 
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      const data = await getPortfolio();
+      setPortfolio(data);
+    };
+
+    fetchPortfolio();
+  }, []);
+  
   return (
     <div className="pageContent">
       <div style={{ maxWidth: '1500px', width: '100%', padding: '20px 0' }}>
         <HStack bg='#1D1E29' w='100%' borderRadius='md' h='100%'>
           <VStack spacing={4} w='30%' p={4} align='start' h='100%'>
             <Text fontWeight='700' fontSize='20px'>Your Cryptocurrencies</Text>
-            {portfolio.map((crypto) => (
+            {portfolio && portfolio.map((crypto) => (
               <Box shadow='md' key={crypto.id} bg='#27293A' borderRadius='md' p={4} w='100%' onClick={() => handleCryptoClick(crypto)} cursor='pointer'>
                 <Text fontWeight='bold'>{crypto.name}</Text>
                 <Text textAlign='right'>{crypto.amount}</Text>

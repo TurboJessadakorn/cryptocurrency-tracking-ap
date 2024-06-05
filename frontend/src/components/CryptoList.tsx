@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getTopCryptos } from '../services/api';
+import { getTopCryptos } from '../services/api/crypto';
+import { addPortfolioItem } from '../services/api/portfolio';
 import CryptoItem from './CryptoItem';
 import AddToPortfolioModal from './AddToPortfolioModal';
 import {
@@ -40,7 +41,7 @@ const defaultCrypto: Crypto = {
 };
 
 const CryptoList: React.FC = () => {
-  const [cryptos, setCryptos] = useState<Crypto[]>(Array(10).fill(defaultCrypto));
+  const [cryptos, setCryptos] = useState<Crypto[]>(Array(100).fill(defaultCrypto));
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCrypto, setSelectedCrypto] = useState<Crypto | null>(null);
@@ -50,8 +51,9 @@ const CryptoList: React.FC = () => {
     onOpen();
   };
 
-  const saveToPortfolio = (amount: number, purchasePrice: number) => {
-    console.log('Save to portfolio:', selectedCrypto, amount, purchasePrice);
+  const saveToPortfolio = async (amount: number, purchasePrice: number) => {
+    const newItem = await addPortfolioItem(selectedCrypto!.name, amount, purchasePrice);
+    console.log(newItem);
   };
 
   useEffect(() => {

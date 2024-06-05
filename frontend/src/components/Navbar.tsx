@@ -30,8 +30,7 @@ import {
   ChevronRightIcon,
 } from '@chakra-ui/icons'
 import { useEffect, useState } from 'react';
-import { registerUser, signInUser } from '../services/api/auth';
-import axios from 'axios';
+import { registerUser, signInUser, getUserInfo } from '../services/api/auth';
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
@@ -45,18 +44,11 @@ export default function WithSubnavigation() {
   const toast = useToast();
 
   const fetchUser = async () => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/user/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUsername(response.data.username);
-      } catch (error) {
+    try {
+      const user = await getUserInfo();
+      setUsername(user.username);
+    } catch (error) {
 
-      }
     }
   };
 
