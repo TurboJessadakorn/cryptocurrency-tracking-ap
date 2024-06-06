@@ -26,6 +26,9 @@ interface Crypto {
   quote: {
     THB: {
       price: number;
+      percent_change_1h: number;
+      percent_change_24h: number;
+      percent_change_7d: number;
     };
   };
   logo: string;
@@ -46,6 +49,7 @@ const CryptoList: React.FC = () => {
   const saveToPortfolio = async (amount: number, purchasePrice: number) => {
     const newItem = await addPortfolioItem(
       selectedCrypto!.name,
+      selectedCrypto!.logo,
       amount,
       purchasePrice
     );
@@ -124,10 +128,11 @@ const CryptoList: React.FC = () => {
           <Thead>
             <Tr>
               <Th></Th>
-              <Th>Symbol</Th>
               <Th>Name</Th>
               <Th>Price (BAHT)</Th>
-              <Th>Change 24h</Th>
+              <Th>1h %</Th>
+              <Th>24h %</Th>
+              <Th>7d %</Th>
               <Th></Th>
             </Tr>
           </Thead>
@@ -139,6 +144,7 @@ const CryptoList: React.FC = () => {
               <Td>
                 <Spinner size="lg" speed='1s' />
               </Td>
+              <Td></Td>
               <Td></Td>
               <Td></Td>
             </Tbody>

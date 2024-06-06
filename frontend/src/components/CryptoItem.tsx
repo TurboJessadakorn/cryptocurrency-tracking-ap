@@ -15,6 +15,9 @@ interface Crypto {
   quote: {
     THB: {
       price: number;
+      percent_change_1h: number;
+      percent_change_24h: number;
+      percent_change_7d: number;
     };
   };
   logo: string;
@@ -27,8 +30,13 @@ interface CryptoItemProps {
   onToggleFavorite: (id: number) => void;
 }
 
-const CryptoItem: React.FC<CryptoItemProps> = ({ crypto, onAdd, onToggleFavorite }) => {
+const getColorAndTriangle = (percentChange: number) => {
+  const color = percentChange >= 0 ? ' #93f997' : 'red';
+  const triangle = percentChange >= 0 ? '▲' : '▼';
+  return { color, triangle };
+};
 
+const CryptoItem: React.FC<CryptoItemProps> = ({ crypto, onAdd, onToggleFavorite }) => {
 
   return (
     <>
@@ -38,12 +46,20 @@ const CryptoItem: React.FC<CryptoItemProps> = ({ crypto, onAdd, onToggleFavorite
       <Td>
       <HStack spacing={2}>
           <img src={crypto.logo} alt={`${crypto.name} logo`} style={{ width: '32px', height: '32px' }} />
-          <p>{crypto.symbol}</p>
+          <p>{crypto.name} {crypto.symbol}</p>
         </HStack>
       </Td>
-      <Td>{crypto.name}</Td>
       <Td>{crypto.quote.THB.price.toFixed(2)} THB</Td>
-      <Td color='#CFA3FF'>{crypto.quote.THB.price.toFixed(2)} THB</Td>
+      <Td color={getColorAndTriangle(crypto.quote.THB.percent_change_1h).color}>
+        {getColorAndTriangle(crypto.quote.THB.percent_change_1h).triangle} {crypto.quote.THB.percent_change_1h.toFixed(2)}%
+      </Td>
+      <Td color={getColorAndTriangle(crypto.quote.THB.percent_change_24h).color}>
+        {getColorAndTriangle(crypto.quote.THB.percent_change_24h).triangle} {crypto.quote.THB.percent_change_24h.toFixed(2)}%
+      </Td>
+      <Td color={getColorAndTriangle(crypto.quote.THB.percent_change_7d).color}>
+        {getColorAndTriangle(crypto.quote.THB.percent_change_7d).triangle} {crypto.quote.THB.percent_change_7d.toFixed(2)}%
+      </Td>
+
       <Td>
         <Button colorScheme='cyan' variant='outline' onClick={() => onAdd(crypto)}>
           Add to Portfolio

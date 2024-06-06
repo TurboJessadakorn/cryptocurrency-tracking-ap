@@ -21,7 +21,7 @@ const Home: React.FC = () => {
           <Stack spacing={'20px'}>
             <div>
               <h1 style={{ fontWeight: '700', fontSize: '25px' }}>Top 100 Cryptocurrency Prices</h1>
-              <p style={{ marginTop: '5px', color: 'rgb(161, 167, 187)' }}>AAAAAAAAAAAAqqaaaaaa</p>
+              <p style={{ marginTop: '5px', color: 'rgb(161, 167, 187)' }}>Top 100 cryptocurrencies fetched from the CoinMarketCap API</p>
             </div>
             <CryptoList></CryptoList>
           </Stack>
