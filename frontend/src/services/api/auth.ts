@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export const registerUser = async (username: string, password: string) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/users/register`, { username, password });
+        const response = await axios.post(`${API_BASE_URL}/user/register`, { username, password });
         return response.data;
     } catch (error) {
         console.error('Error registering user:', error);
