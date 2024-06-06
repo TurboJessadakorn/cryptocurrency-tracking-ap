@@ -8,6 +8,6 @@ export const getTopCryptos = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching cryptocurrencies:', error);
-    throw error;
+    
   }
 };
