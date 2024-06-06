@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { getTopCryptos } from '../services/api/crypto';
-import { addPortfolioItem } from '../services/api/portfolio';
-import CryptoItem from './CryptoItem';
-import AddToPortfolioModal from './AddToPortfolioModal';
+import React, { useEffect, useState } from "react";
+import { getTopCryptos } from "../services/api/crypto";
+import { addPortfolioItem } from "../services/api/portfolio";
+import CryptoItem from "./CryptoItem";
+import AddToPortfolioModal from "./AddToPortfolioModal";
 import {
   Input,
   Stack,
@@ -14,7 +14,10 @@ import {
   TableContainer,
   HStack,
   useDisclosure,
-} from '@chakra-ui/react'
+  Spinner,
+  Td,
+} from "@chakra-ui/react";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface Crypto {
   id: number;
@@ -26,23 +29,12 @@ interface Crypto {
     };
   };
   logo: string;
+  isFavorite: boolean;
 }
 
-const defaultCrypto: Crypto = {
-  id: 0,
-  name: 'Bitcoin',
-  symbol: 'BTC',
-  quote: {
-    THB: {
-      price: 0,
-    },
-  },
-  logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
-};
-
 const CryptoList: React.FC = () => {
-  const [cryptos, setCryptos] = useState<Crypto[]>(Array(100).fill(defaultCrypto));
-
+  const [cryptos, setCryptos] = useState<Crypto[]>([]);
+  const [isLoadingCryptos, setIsLoadingCryptos] = useState<boolean>(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCrypto, setSelectedCrypto] = useState<Crypto | null>(null);
 
@@ -52,26 +44,83 @@ const CryptoList: React.FC = () => {
   };
 
   const saveToPortfolio = async (amount: number, purchasePrice: number) => {
-    const newItem = await addPortfolioItem(selectedCrypto!.name, amount, purchasePrice);
+    const newItem = await addPortfolioItem(
+      selectedCrypto!.name,
+      amount,
+      purchasePrice
+    );
     console.log(newItem);
   };
 
   useEffect(() => {
     const fetchCryptos = async () => {
-      const data = await getTopCryptos();
-      console.log(data)
-      setCryptos(data);
+      setIsLoadingCryptos(true);
+      try {
+        const data = await getTopCryptos();
+        const cryptosWithFavorites = data.map((crypto: any) => ({
+          ...crypto,
+          isFavorite: false,
+        }));
+        setCryptos(cryptosWithFavorites);
+      } catch (error) {
+        console.error("Failed to fetch top cryptos:", error);
+      }
+      setIsLoadingCryptos(false);
     };
-    // fetchCryptos();
+    fetchCryptos();
   }, []);
 
+  useEffect(() => {
+    const savedFavorites = JSON.parse(
+      localStorage.getItem("favoriteCryptos") || "[]"
+    );
+    setCryptos((prevCryptos) =>
+      prevCryptos.map((crypto) => ({
+        ...crypto,
+        isFavorite: savedFavorites.includes(crypto.id),
+      }))
+    );
+  }, [cryptos]);
+
+  const toggleFavorite = (id: number) => {
+    setCryptos((prevCryptos) => {
+      const updatedCryptos = prevCryptos.map((crypto) =>
+        crypto.id === id
+          ? { ...crypto, isFavorite: !crypto.isFavorite }
+          : crypto
+      );
+
+      const favoriteIds = updatedCryptos
+        .filter((crypto) => crypto.isFavorite)
+        .map((crypto) => crypto.id);
+      localStorage.setItem("favoriteCryptos", JSON.stringify(favoriteIds));
+
+      return updatedCryptos;
+    });
+  };
+
+  const sortedCryptos = [...cryptos].sort((a, b) => {
+    if (a.isFavorite === b.isFavorite) {
+      return 0;
+    } else if (a.isFavorite) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+
   return (
-    <Stack style={{ display: 'flex', flexDirection: 'column' }} spacing='12px'>
+    <Stack style={{ display: "flex", flexDirection: "column" }} spacing="12px">
       <HStack>
-        <Input size='sm' width='100%' maxWidth='500px' placeholder='Search crypto'></Input>
+        <Input
+          size="sm"
+          width="100%"
+          maxWidth="500px"
+          placeholder="Search crypto"
+        ></Input>
       </HStack>
       <TableContainer>
-        <Table variant='simple'>
+        <Table variant="simple">
           <Thead>
             <Tr>
               <Th></Th>
@@ -82,11 +131,45 @@ const CryptoList: React.FC = () => {
               <Th></Th>
             </Tr>
           </Thead>
-          <Tbody>
-          {cryptos && cryptos.map(crypto => (
-            <CryptoItem key={crypto.id} crypto={crypto} onAdd={handleAddToPortfolio} />
-          ))}
-          </Tbody>
+          {isLoadingCryptos ? (
+            <Tbody>
+              <Td></Td>
+              <Td></Td>
+              <Td></Td>
+              <Td>
+                <Spinner size="lg" speed='1s' />
+              </Td>
+              <Td></Td>
+              <Td></Td>
+            </Tbody>
+          ) : (
+            <Tbody>
+              <AnimatePresence>
+                {sortedCryptos.map((crypto) => (
+                  <motion.tr
+                    key={crypto.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    layout
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30,
+                      duration: 0.8,
+                    }}
+                  >
+                    <CryptoItem
+                      key={crypto.id}
+                      crypto={crypto}
+                      onAdd={handleAddToPortfolio}
+                      onToggleFavorite={toggleFavorite}
+                    />
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+            </Tbody>
+          )}
         </Table>
       </TableContainer>
       {selectedCrypto && (

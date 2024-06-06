@@ -18,20 +18,22 @@ interface Crypto {
     };
   };
   logo: string;
+  isFavorite: boolean;
 }
 
 interface CryptoItemProps {
   crypto: Crypto;
   onAdd: (crypto: Crypto) => void;
+  onToggleFavorite: (id: number) => void;
 }
 
-const CryptoItem: React.FC<CryptoItemProps> = ({ crypto, onAdd }) => {
+const CryptoItem: React.FC<CryptoItemProps> = ({ crypto, onAdd, onToggleFavorite }) => {
 
 
   return (
-    <Tr style={{ justifyContent: 'space-between', padding: '10px 20px' }}>
+    <>
       <Td>
-        <StarIcon></StarIcon>
+          <StarIcon onClick={() => onToggleFavorite(crypto.id)} color={crypto.isFavorite ? 'yellow' : 'gray'} cursor={'pointer'}></StarIcon>
       </Td>
       <Td>
       <HStack spacing={2}>
@@ -47,7 +49,7 @@ const CryptoItem: React.FC<CryptoItemProps> = ({ crypto, onAdd }) => {
           Add to Portfolio
         </Button>
       </Td>
-    </Tr>
+    </>
   );
 };
 
