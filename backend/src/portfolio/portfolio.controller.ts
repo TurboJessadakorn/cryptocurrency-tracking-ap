@@ -9,7 +9,7 @@ export class PortfolioController {
   constructor(
     private readonly portfolioService: PortfolioService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -18,6 +18,8 @@ export class PortfolioController {
     return this.portfolioService.create(
       user,
       createPortfolioDto.cryptocurrency,
+      createPortfolioDto.logo,
+      createPortfolioDto.symbol,
       createPortfolioDto.amount,
       createPortfolioDto.purchasePrice,
     );
@@ -29,17 +31,33 @@ export class PortfolioController {
     const user = await this.userService.findById(req.user.sub);
     const portfolios = await this.portfolioService.findByUser(user);
 
-    const response = portfolios.map(portfolio => ({
-      id: portfolio.id,
-      name: portfolio.cryptocurrency,
-      amount: portfolio.amount,
-      history: [{
-        date: portfolio.createdAt.toISOString().split('T')[0],
-        price: portfolio.purchasePrice,
-      }],
-    }));
+    const aggregatedPortfolios = portfolios.reduce((acc, portfolio) => {
+      const key = `${portfolio.cryptocurrency}-${portfolio.symbol}`;
+      if (!acc[key]) {
+        acc[key] = {
+          id: portfolio.id,
+          name: portfolio.cryptocurrency,
+          logo: portfolio.logo,
+          symbol: portfolio.symbol,
+          amount:  Number(portfolio.amount),
+          history: [{
+            date: portfolio.createdAt.toISOString().split('T')[0],
+            price: portfolio.purchasePrice,
+            amount:  Number(portfolio.amount),
+          }],
+        };
+      } else {
+        acc[key].amount += Number(portfolio.amount);
+        acc[key].history.push({
+          date: portfolio.createdAt.toISOString().split('T')[0],
+          price: portfolio.purchasePrice,
+          amount:  Number(portfolio.amount),
+        });
+      }
+      return acc;
+    }, {});
 
-    return response;
+    return Object.values(aggregatedPortfolios);
   }
 
   @UseGuards(JwtAuthGuard)

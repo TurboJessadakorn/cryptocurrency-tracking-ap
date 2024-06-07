@@ -5,6 +5,14 @@ export class CreatePortfolioDto {
   @IsNotEmpty()
   cryptocurrency: string;
 
+  @IsString()
+  @IsNotEmpty()
+  logo: string;
+
+  @IsString()
+  @IsNotEmpty()
+  symbol: string;
+
   @IsNumber()
   @IsNotEmpty()
   amount: number;

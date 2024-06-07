@@ -11,10 +11,12 @@ export class PortfolioService {
     private portfolioRepository: Repository<Portfolio>,
   ) {}
 
-  async create(user: User, cryptocurrency: string, amount: number, purchasePrice: number): Promise<Portfolio> {
+  async create(user: User, cryptocurrency: string, logo: string, symbol: string, amount: number, purchasePrice: number): Promise<Portfolio> {
     const portfolio = new Portfolio();
     portfolio.user = user;
     portfolio.cryptocurrency = cryptocurrency;
+    portfolio.logo = logo;
+    portfolio.symbol = symbol;
     portfolio.amount = amount;
     portfolio.purchasePrice = purchasePrice;
     return this.portfolioRepository.save(portfolio);

@@ -9,6 +9,12 @@ export class Portfolio {
   @Column()
   cryptocurrency: string;
 
+  @Column({ default: '' })
+  logo: string;
+
+  @Column({ default: '' })
+  symbol: string;
+
   @Column('decimal')
   amount: number;
 
