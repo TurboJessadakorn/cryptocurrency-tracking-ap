@@ -94,10 +94,10 @@ const Portfolio: React.FC = () => {
   return (
     <div className="pageContent">
       <div style={{ maxWidth: '1500px', width: '100%', padding: '20px 0' }}>
-        <HStack bg='#1D1E29' w='100%' borderRadius='md' h='100%'>
-          
+        <HStack bg='#1D1E29' w='100%' borderRadius='md' h='100%' flexWrap='wrap' spacing={0}>
+
           {/* Left side: Display list of cryptocurrencies */}
-          <VStack spacing={4} w='30%' p={6} align='start' h='100%'>
+          <VStack spacing={4} w={['100%', '100%', '30%']} p={6} align='start' h='100%'>
             <Text fontWeight='700' fontSize='20px'>Your Cryptocurrencies</Text>
             {portfolio && portfolio.map((crypto) => (
               <Box shadow='lg' key={crypto.id} bg='#27293A' borderRadius='md' p={4} w='100%' onClick={() => handleCryptoClick(crypto)} cursor='pointer'>
@@ -113,7 +113,7 @@ const Portfolio: React.FC = () => {
                 </HStack>
               </Box>
             ))}
-            {!portfolio &&(
+            {!portfolio && (
               <Box shadow='lg' bg='#27293A' borderRadius='md' p={4} w='100%' cursor='pointer'>
                 <HStack h='100%' align='start'>
                   <HStack spacing={2} w='100%' align='center'>
@@ -125,7 +125,7 @@ const Portfolio: React.FC = () => {
           </VStack>
 
           {/* Right side: Display history of selected cryptocurrency */}
-          <VStack flex='1' p={6} bg='#1F2130' h='100%' minH={'60vH'}>
+          <VStack flex='1' p={6} bg='#1F2130' h='100%' minH={'60vH'} w={['100%', '100%', '70%']} mt={['4', '4', '0']}>
             {selectedCrypto ? (
               <>
                 <HStack style={{ width: '100%' }} justify={'space-between'} align={'start'}>
