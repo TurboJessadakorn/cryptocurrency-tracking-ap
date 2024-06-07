@@ -31,7 +31,7 @@ interface CryptoItemProps {
 }
 
 const getColorAndTriangle = (percentChange: number) => {
-  const color = percentChange >= 0 ? ' #93f997' : 'red';
+  const color = percentChange >= 0 ? ' #93f997' : '#fe7a73';
   const triangle = percentChange >= 0 ? '▲' : '▼';
   return { color, triangle };
 };
@@ -61,7 +61,7 @@ const CryptoItem: React.FC<CryptoItemProps> = ({ crypto, onAdd, onToggleFavorite
       </Td>
 
       <Td>
-        <Button colorScheme='cyan' variant='outline' onClick={() => onAdd(crypto)}>
+        <Button color={'white'} bg={'#5142FF'} _hover={{ bg: '8379fd'}} onClick={() => onAdd(crypto)}>
           Add to Portfolio
         </Button>
       </Td>

@@ -19,9 +19,9 @@ export const getPortfolio = async () => {
   }
 };
 
-export const addPortfolioItem = async (cryptocurrency: string, amount: number, purchasePrice: number) => {
+export const addPortfolioItem = async (cryptocurrency: string, logo: string, symbol: string, amount: number, purchasePrice: number) => {
   try {
-    const response = await api.post('/portfolio', { cryptocurrency, amount, purchasePrice });
+    const response = await api.post('/portfolio', { cryptocurrency, logo, symbol, amount, purchasePrice });
     return response.data;
   } catch (error) {
 

@@ -50,6 +50,7 @@ const CryptoList: React.FC = () => {
     const newItem = await addPortfolioItem(
       selectedCrypto!.name,
       selectedCrypto!.logo,
+      selectedCrypto!.symbol,
       amount,
       purchasePrice
     );
