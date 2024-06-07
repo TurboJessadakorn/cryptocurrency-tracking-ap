@@ -39,8 +39,15 @@ const Portfolio: React.FC = () => {
 
   useEffect(() => {
     const fetchPortfolio = async () => {
-      const data = await getPortfolio();
-      setPortfolio(data);
+      try {
+        const data = await getPortfolio();
+        setPortfolio(data);
+        if (data.length > 0) {
+          setSelectedCrypto(data[0]); // Set the first item as the selected crypto
+        }
+      } catch (error) {
+
+      }
     };
     const fetchCurrentPrices = async () => {
       try {
@@ -106,6 +113,15 @@ const Portfolio: React.FC = () => {
                 </HStack>
               </Box>
             ))}
+            {!portfolio &&(
+              <Box shadow='lg' bg='#27293A' borderRadius='md' p={4} w='100%' cursor='pointer'>
+                <HStack h='100%' align='start'>
+                  <HStack spacing={2} w='100%' align='center'>
+                    <Text fontWeight='bold'>No cryptocurrencies in your portfolio</Text>
+                  </HStack>
+                </HStack>
+              </Box>
+            )}
           </VStack>
 
           {/* Right side: Display history of selected cryptocurrency */}
@@ -153,7 +169,7 @@ const Portfolio: React.FC = () => {
                 </VStack>
               </>
             ) : (
-              <Text>Select a cryptocurrency to see its history</Text>
+              <></>
             )}
           </VStack>
         </HStack>
