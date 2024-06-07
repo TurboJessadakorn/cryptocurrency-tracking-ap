@@ -26,7 +26,7 @@ export interface CryptoResponse {
 
 @Injectable()
 export class CryptoService {
-  private readonly apiKey = '41364024-642b-488d-b8f8-899f5483a64f';
+  private readonly apiKey = process.env.COINMARKETCAP_API_KEY;
   private readonly baseUrl = 'https://pro-api.coinmarketcap.com/v1';
 
   constructor(private readonly httpService: HttpService) {}

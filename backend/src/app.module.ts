@@ -24,7 +24,7 @@ import { User } from './user/user.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [ User, Portfolio ],
+        entities: [User, Portfolio],
         synchronize: true,
       }),
       inject: [ConfigService],
