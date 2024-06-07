@@ -1,5 +1,5 @@
 import { Entity, Column, ObjectIdColumn, OneToMany, ObjectId, PrimaryGeneratedColumn } from 'typeorm';
-import { Portfolio } from 'src/portfolio/portfolio.entity';
+import { Portfolio } from '../portfolio/portfolio.entity';
 
 @Entity()
 export class User {
@@ -11,6 +11,7 @@ export class User {
 
   @Column()
   password: string;
+
   @OneToMany(() => Portfolio, portfolio => portfolio.user)
   portfolios: Portfolio[];
 }
