@@ -31,6 +31,7 @@ import {
 } from '@chakra-ui/icons'
 import { useEffect, useState } from 'react';
 import { registerUser, signInUser, getUserInfo } from '../services/api/auth';
+import { useNavigate } from 'react-router-dom';
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
@@ -42,6 +43,7 @@ export default function WithSubnavigation() {
   const [signUpPassword, setSignUpPassword] = useState('');
   const [username, setUsername] = useState<string | null>(null);
   const toast = useToast();
+  const navigate = useNavigate();
 
   const fetchUser = async () => {
     try {
@@ -61,8 +63,10 @@ export default function WithSubnavigation() {
         status: 'success',
         duration: 5000,
         isClosable: true,
+        position: 'top'
       });
       onSignUpClose();
+      navigate('/');
     } catch (error) {
       toast({
         title: 'Error',
@@ -70,6 +74,7 @@ export default function WithSubnavigation() {
         status: 'error',
         duration: 5000,
         isClosable: true,
+        position: 'top'
       });
     }
   };
@@ -84,8 +89,10 @@ export default function WithSubnavigation() {
         status: 'success',
         duration: 5000,
         isClosable: true,
+        position: 'top'
       });
       onSignInClose();
+      navigate('/');
     } catch (error) {
       toast({
         title: 'Error',
@@ -93,6 +100,7 @@ export default function WithSubnavigation() {
         status: 'error',
         duration: 5000,
         isClosable: true,
+        position: 'top'
       });
     }
   };
@@ -100,9 +108,8 @@ export default function WithSubnavigation() {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     setUsername(null);
+    navigate('/');
   };
-
-  const API_BASE_URL = 'http://localhost:3001';
 
   useEffect(() => {
     fetchUser();
@@ -145,10 +152,7 @@ export default function WithSubnavigation() {
           spacing={8}>
           {username ? (
             <>
-              <Text fontSize={'md'} color={'gray.200'}>
-                {username}
-              </Text>
-              <Button fontSize={'md'} fontWeight={400} variant={'link'} color={'gray.200'} onClick={handleLogout}>
+              <Button fontSize={'md'} fontWeight={400} variant={'link'} color={'gray.200'} onClick={handleLogout} mr={5}>
                 Logout
               </Button>
             </>
@@ -235,6 +239,22 @@ const DesktopNav = () => {
   const linkColor = 'gray.200'
   const linkHoverColor = 'white'
   const popoverContentBgColor = 'gray.800'
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const handleNavigation = (href: string) => {
+    if(href == '/portfolio' && !localStorage.getItem('accessToken')){
+      toast({
+        description: 'Please sign in before edit portfolio',
+        status: 'info',
+        duration: 5000,
+        isClosable: true,
+        position: 'top'
+      });
+    } else {
+      navigate(href);
+    }
+  };
 
   return (
     <Stack direction={'row'} spacing={2}>
@@ -243,9 +263,10 @@ const DesktopNav = () => {
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
               <Box
+                cursor={'pointer'}
                 as="a"
                 p={6}
-                href={navItem.href ?? '#'}
+                onClick={() => handleNavigation(navItem.href ?? '#')}
                 fontSize={'md'}
                 fontWeight={500}
                 color={linkColor}
@@ -282,6 +303,7 @@ const DesktopNav = () => {
 const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
   return (
     <Box
+      cursor={'pointer'}
       as="a"
       href={href}
       role={'group'}
@@ -326,13 +348,18 @@ const MobileNav = () => {
 
 const MobileNavItem = ({ label, children, href }: NavItem) => {
   const { isOpen, onToggle } = useDisclosure()
+  const navigate = useNavigate();
+  
+  const handleNavigation = (href: string) => {
+    navigate(href);
+  };
 
   return (
     <Stack spacing={4} onClick={children && onToggle}>
       <Box
         py={2}
         as="a"
-        href={href ?? '#'}
+        onClick={() => handleNavigation(href ?? '#')}
         justifyContent="space-between"
         alignItems="center"
         _hover={{

@@ -16,6 +16,7 @@ import {
   useDisclosure,
   Spinner,
   Td,
+  useToast,
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -40,10 +41,22 @@ const CryptoList: React.FC = () => {
   const [isLoadingCryptos, setIsLoadingCryptos] = useState<boolean>(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCrypto, setSelectedCrypto] = useState<Crypto | null>(null);
+  const toast = useToast();
 
   const handleAddToPortfolio = (crypto: Crypto) => {
-    setSelectedCrypto(crypto);
-    onOpen();
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      setSelectedCrypto(crypto);
+      onOpen();
+    } else {
+      toast({
+        description: 'Please sign in before edit portfolio',
+        status: 'info',
+        duration: 5000,
+        isClosable: true,
+        position: 'top'
+      });
+    }
   };
 
   const saveToPortfolio = async (amount: number, purchasePrice: number) => {
@@ -116,14 +129,6 @@ const CryptoList: React.FC = () => {
 
   return (
     <Stack style={{ display: "flex", flexDirection: "column" }} spacing="12px">
-      <HStack>
-        <Input
-          size="sm"
-          width="100%"
-          maxWidth="500px"
-          placeholder="Search crypto"
-        ></Input>
-      </HStack>
       <TableContainer>
         <Table variant="simple">
           <Thead>
